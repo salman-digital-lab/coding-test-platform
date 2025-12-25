@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Test Platform</title>
+    <meta
+      name="description"
+      content="Take your JavaScript coding assessment"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <a href="/" class="nav-brand">Coding Test</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container container-sm" style="margin-top: 5rem">
+      <div class="card">
+        <div class="text-center">
+          <h1>Welcome</h1>
+          <p class="subtitle">
+            Enter your email to begin the coding assessment
+          </p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="emailForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="your@email.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            id="submitBtn"
+          >
+            <span id="btnText">Start Test</span>
+            <div id="btnSpinner" class="spinner" style="display: none"></div>
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById('emailForm');
+      const alert = document.getElementById('alert');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      function showAlert(message, type) {
+        alert.textContent = message;
+        alert.className = `alert alert-${type} show`;
+      }
+
+      function setLoading(loading) {
+        submitBtn.disabled = loading;
+        btnText.style.display = loading ? 'none' : 'inline';
+        btnSpinner.style.display = loading ? 'block' : 'none';
+      }
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        
+        if (!email || !email.includes('@')) {
+          showAlert('Please enter a valid email address', 'error');
+          return;
+        }
+
+        // Store email and redirect to test
+        sessionStorage.setItem('userEmail', email);
+        window.location.href = '/test';
+      });
+    </script>
+  </body>
+</html>

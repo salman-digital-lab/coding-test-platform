@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Assessment - Coding Test Platform</title>
+  <meta name="description" content="Complete your coding assessment">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* LeetCode-style layout */
+    .test-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      height: calc(100vh - 60px);
+      padding: 1rem;
+    }
+    
+    .problem-panel, .code-panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    
+    .panel-header {
+      padding: 0.75rem 1rem;
+      background: var(--dark-6);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+    }
+    
+    /* Problem Navigation */
+    #problemNav {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+    }
+    
+    .problem-nav-item {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--dark-6);
+      border: 1px solid var(--card-border);
+      color: var(--text-dimmed);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .problem-nav-item:hover {
+      border-color: var(--dark-4);
+      color: var(--text);
+    }
+    
+    .problem-nav-item.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .problem-nav-item.passed {
+      background: rgba(64, 192, 87, 0.15);
+      border-color: var(--success);
+      color: var(--success);
+    }
+    
+    .problem-nav-item.failed {
+      background: rgba(250, 82, 82, 0.15);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    
+    /* Problem Content */
+    #problemTitle {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .difficulty {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    
+    .difficulty.easy {
+      background: rgba(64, 192, 87, 0.15);
+      color: #69db7c;
+    }
+    
+    .difficulty.medium {
+      background: rgba(250, 176, 5, 0.15);
+      color: #ffd43b;
+    }
+    
+    .difficulty.hard {
+      background: rgba(250, 82, 82, 0.15);
+      color: #ff8787;
+    }
+    
+    #problemDescription {
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+      font-size: 0.9375rem;
+      color: var(--text-dimmed);
+    }
+    
+    #problemDescription code {
+      background: var(--dark-6);
+      padding: 0.125rem 0.375rem;
+      border-radius: var(--radius-sm);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.875em;
+      color: var(--primary);
+    }
+    
+    #problemDescription ul {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+    
+    #problemDescription li {
+      margin: 0.25rem 0;
+    }
+    
+    .example {
+      background: var(--dark-6);
+      border-radius: var(--radius-sm);
+      padding: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .example-title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+    
+    .example-content {
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    
+    .example-content div {
+      margin: 0.25rem 0;
+    }
+    
+    /* Monaco Editor Container */
+    #editorContainer {
+      flex: 1;
+      min-height: 300px;
+      background: #1e1e1e;
+    }
+    
+    .code-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: var(--dark-6);
+      border-top: 1px solid var(--card-border);
+    }
+    
+    /* Test Output */
+    .output-panel {
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 0.75rem;
+      background: var(--dark-9);
+      border-top: 1px solid var(--card-border);
+      font-size: 0.8125rem;
+    }
+    
+    .results-summary {
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      font-size: 0.8125rem;
+    }
+    
+    .results-summary.success {
+      background: rgba(64, 192, 87, 0.15);
+      color: #69db7c;
+    }
+    
+    .results-summary.error {
+      background: rgba(250, 82, 82, 0.15);
+      color: #ff8787;
+    }
+    
+    .test-cases {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .test-case {
+      background: var(--dark-7);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    
+    .test-case-header {
+      padding: 0.375rem 0.75rem;
+      font-weight: 500;
+      font-size: 0.8125rem;
+    }
+    
+    .test-case.passed .test-case-header {
+      background: rgba(64, 192, 87, 0.15);
+      color: #69db7c;
+    }
+    
+    .test-case.failed .test-case-header {
+      background: rgba(250, 82, 82, 0.15);
+      color: #ff8787;
+    }
+    
+    .test-case-body {
+      padding: 0.5rem 0.75rem;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+    
+    .test-case-body code {
+      color: var(--primary);
+    }
+    
+    .test-case-body code.error {
+      color: #ff8787;
+    }
+    
+    /* Buttons */
+    .btn-run {
+      background: var(--dark-6);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    
+    .btn-run:hover {
+      background: var(--dark-5);
+    }
+    
+    .btn-submit {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-submit:hover {
+      background: #37b24d;
+    }
+
+    /* Loading state */
+    .editor-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .test-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      
+      .problem-panel, .code-panel {
+        min-height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">CodeTest</a>
+    <div class="nav-links">
+      <span id="userEmail" class="text-muted"></span>
+    </div>
+  </nav>
+  
+  <!-- Test Section -->
+  <div id="testSection">
+    <div class="test-container">
+      <!-- Problem Panel -->
+      <div class="problem-panel">
+        <div class="panel-header">
+          <span>Problems</span>
+          <div id="problemNav"></div>
+        </div>
+        <div class="panel-body">
+          <h2 id="problemTitle"></h2>
+          <span id="problemDifficulty" class="difficulty"></span>
+          <div id="problemDescription"></div>
+          <div id="examplesContainer"></div>
+        </div>
+      </div>
+      
+      <!-- Code Panel -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>JavaScript</span>
+        </div>
+        <div id="editorContainer">
+          <div class="editor-loading">Loading editor...</div>
+        </div>
+        <div class="code-actions">
+          <button id="runBtn" class="btn btn-run">▶ Run Tests</button>
+          <button id="submitBtn" class="btn btn-submit">Submit All</button>
+        </div>
+        <div class="output-panel" id="testOutput">
+          <span class="text-muted">Click "Run Tests" to test your solution</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Result Section -->
+  <div id="resultSection" style="display: none;">
+    <div class="container container-sm" style="margin-top: 5rem;">
+      <div class="card result-card">
+        <h2>Assessment Complete!</h2>
+        <div class="score-circle">
+          <span class="score-value" id="scoreValue">0</span>
+          <span class="score-label">out of <span id="scoreTotal">5</span></span>
+        </div>
+        <p class="subtitle" id="scoreMessage"></p>
+        <p class="text-muted mb-3">Your results have been submitted successfully.</p>
+        <a href="/" class="btn btn-primary">Return Home</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Monaco Editor from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+  <script>
+    // Check token before loading anything
+    if (!sessionStorage.getItem('testToken')) {
+      window.location.href = '/';
+    }
+    
+    // Configure Monaco loader
+    require.config({ 
+      paths: { 
+        vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' 
+      }
+    });
+    
+    // Global variable for Monaco editor
+    window.monacoEditor = null;
+    window.monacoReady = false;
+    
+    // Load Monaco Editor
+    require(['vs/editor/editor.main'], function() {
+      console.log('Monaco Editor loaded');
+      window.monacoReady = true;
+      
+      // Dispatch event when Monaco is ready
+      window.dispatchEvent(new Event('monaco-ready'));
+    });
+  </script>
+  <script src="/js/test.js"></script>
+</body>
+</html>

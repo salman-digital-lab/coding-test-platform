@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Coding Test Platform</title>
+  <meta name="description" content="View test results">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--body-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 360px;
+      padding: var(--spacing-xl);
+    }
+    .admin-content {
+      display: none;
+    }
+    .admin-content.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="card login-card">
+      <div class="text-center">
+        <h1>Admin Login</h1>
+        <p class="subtitle">Enter password to access admin panel</p>
+      </div>
+      
+      <div id="loginAlert" class="alert"></div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter admin password"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+          <span id="loginBtnText">Login</span>
+          <div id="loginSpinner" class="spinner" style="display: none;"></div>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Content (hidden until login) -->
+  <div id="adminContent" class="admin-content">
+    <!-- Navigation -->
+    <nav class="nav">
+      <a href="/" class="nav-brand">Coding Test</a>
+      <div class="nav-links">
+        <button class="btn btn-secondary" id="logoutBtn" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;">Logout</button>
+      </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem; padding-bottom: 3rem;">
+      <div class="text-center mb-3">
+        <h1>Test Results</h1>
+        <p class="subtitle">View all submitted test results</p>
+      </div>
+      
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="margin: 0;">Results</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary" id="exportBtn">Export CSV</button>
+            <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+          </div>
+        </div>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Score</th>
+                <th>Percentage</th>
+                <th>Submitted At</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody">
+              <tr>
+                <td colspan="4" class="text-center text-muted">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script src="/js/admin.js"></script>
+</body>
+</html>
