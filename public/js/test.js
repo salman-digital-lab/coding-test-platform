@@ -449,12 +449,40 @@ function displayResults(problem, results) {
   testOutput.innerHTML = html;
 }
 
-// Submit all solutions
-submitBtn.addEventListener("click", async () => {
-  // Save current code
+// Modal Elements
+const confirmModal = document.getElementById("confirmModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const cancelSubmitBtn = document.getElementById("cancelSubmitBtn");
+const confirmSubmitBtn = document.getElementById("confirmSubmitBtn");
+
+// Modal Functions
+function openModal() {
+  confirmModal.classList.add("active");
+}
+
+function closeModal() {
+  confirmModal.classList.remove("active");
+}
+
+// Modal Event Listeners
+closeModalBtn.addEventListener("click", closeModal);
+cancelSubmitBtn.addEventListener("click", closeModal);
+confirmModal.addEventListener("click", (e) => {
+  if (e.target === confirmModal) closeModal();
+});
+
+// Trigger Modal on Submit Click
+submitBtn.addEventListener("click", () => {
+  // Save current code before showing modal
   if (monacoEditor) {
     userCode[problems[currentProblemIndex].id] = monacoEditor.getValue();
   }
+  openModal();
+});
+
+// Actual Submission Logic on Confirm Click
+confirmSubmitBtn.addEventListener("click", async () => {
+  closeModal();
 
   // Run all tests and calculate score
   let passedProblems = 0;
@@ -468,6 +496,9 @@ submitBtn.addEventListener("click", async () => {
 
   submitBtn.disabled = true;
   submitBtn.innerHTML = '<div class="spinner"></div> Submitting...';
+
+  // Also disable modal confirm button to prevent double clicks if modal re-opens (though it shouldn't)
+  confirmSubmitBtn.disabled = true;
 
   try {
     const response = await fetch("/api/submit-score", {
@@ -487,13 +518,15 @@ submitBtn.addEventListener("click", async () => {
     } else {
       alert(data.error || "Failed to submit");
       submitBtn.disabled = false;
-      submitBtn.innerHTML = "Submit All";
+      submitBtn.innerHTML = "Submitting..."; // Keep it as text or revert to button
+      confirmSubmitBtn.disabled = false;
     }
   } catch (error) {
     console.error("Error:", error);
     alert("Failed to submit. Please try again.");
     submitBtn.disabled = false;
     submitBtn.innerHTML = "Submit All";
+    confirmSubmitBtn.disabled = false;
   }
 });
 
