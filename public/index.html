@@ -3,62 +3,228 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coding Test Platform</title>
-    <meta
-      name="description"
-      content="Take your JavaScript coding assessment"
-    />
+    <title>CODING_TEST // SYSTEM LOGIN</title>
+    <meta name="description" content="Enter the coding assessment terminal" />
     <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .hero {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .terminal-window {
+        width: 100%;
+        max-width: 520px;
+      }
+
+      .ascii-logo {
+        font-size: 0.5rem;
+        line-height: 1.2;
+        color: var(--text-dim);
+        text-align: center;
+        margin-bottom: var(--space-lg);
+        white-space: pre;
+        overflow-x: auto;
+      }
+
+      .window-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-sm) var(--space-md);
+        border: 1px solid var(--border);
+        border-bottom: none;
+        background: var(--bg-panel);
+      }
+
+      .window-title {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+      }
+
+      .window-controls {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .window-body {
+        border: 1px solid var(--border);
+        padding: var(--space-xl);
+      }
+
+      .welcome-text {
+        font-size: 1rem;
+        color: var(--text);
+        text-shadow: var(--glow-primary);
+        margin-bottom: var(--space-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .welcome-sub {
+        font-size: 0.8125rem;
+        color: var(--text-dim);
+        margin-bottom: var(--space-xl);
+      }
+
+      .prompt-line {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: var(--space-md);
+      }
+
+      .prompt-symbol {
+        color: var(--text-dim);
+        font-size: 0.875rem;
+        flex-shrink: 0;
+      }
+
+      .prompt-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.875rem;
+        caret-color: var(--primary);
+        outline: none;
+      }
+
+      .prompt-input::placeholder {
+        color: var(--text-muted);
+      }
+
+      .cursor-block {
+        width: 8px;
+        height: 16px;
+        background: var(--primary);
+        animation: blink 1s steps(1) infinite;
+        flex-shrink: 0;
+      }
+
+      .status-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: var(--space-lg);
+        padding-top: var(--space-sm);
+        border-top: 1px dashed var(--border);
+        font-size: 0.6875rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .status-ready {
+        color: var(--primary);
+        text-shadow: var(--glow-primary);
+      }
+
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .ascii-logo {
+          font-size: 0.35rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- Navigation -->
     <nav class="nav">
-      <a href="/" class="nav-brand">Coding Test</a>
+      <a href="/" class="nav-brand">CODING_TEST</a>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container container-sm" style="margin-top: 5rem">
-      <div class="card">
-        <div class="text-center">
-          <h1>Welcome</h1>
-          <p class="subtitle">
-            Enter your email to begin the coding assessment
-          </p>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="terminal-window">
+        <!-- ASCII Art Logo -->
+        <pre class="ascii-logo">
+ ██████╗ ██████╗ ██████╗ ███████╗    ████████╗███████╗███████╗████████╗
+██╔════╝██╔═══██╗██╔══██╗██╔════╝    ╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝
+██║     ██║   ██║██║  ██║█████╗         ██║   █████╗  ███████╗   ██║   
+██║     ██║   ██║██║  ██║██╔══╝         ██║   ██╔══╝  ╚════██║   ██║   
+╚██████╗╚██████╔╝██████╔╝███████╗       ██║   ███████╗███████║   ██║   
+ ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝       ╚═╝   ╚══════╝╚══════╝   ╚═╝   
+        </pre>
+
+        <!-- Window Header -->
+        <div class="window-header">
+          <span class="window-title">// SYSTEM_LOGIN</span>
+          <span class="window-controls">[-] [□] [×]</span>
         </div>
 
-        <div id="alert" class="alert"></div>
+        <!-- Window Body -->
+        <div class="window-body">
+          <div id="alert" class="alert"></div>
 
-        <form id="emailForm">
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="your@email.com"
-              autocomplete="email"
-              required
-            />
+          <h1 class="welcome-text">AUTHENTICATION REQUIRED</h1>
+          <p class="welcome-sub">
+            // Enter your email to access the coding assessment terminal
+          </p>
+
+          <form id="emailForm">
+            <div class="prompt-line">
+              <span class="prompt-symbol">user@test:~$</span>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="prompt-input"
+                placeholder="enter_email@domain.com"
+                autocomplete="email"
+                required
+              />
+              <span class="cursor-block" id="cursorBlock"></span>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              id="submitBtn"
+            >
+              <span id="btnText">INITIATE TEST</span>
+              <div id="btnSpinner" class="spinner" style="display: none"></div>
+            </button>
+          </form>
+
+          <div class="status-line">
+            <span>SESSION: GUEST</span>
+            <span class="status-ready">[READY]</span>
           </div>
-
-          <button
-            type="submit"
-            class="btn btn-primary btn-block"
-            id="submitBtn"
-          >
-            <span id="btnText">Start Test</span>
-            <div id="btnSpinner" class="spinner" style="display: none"></div>
-          </button>
-        </form>
+        </div>
       </div>
-    </main>
+    </section>
 
     <script>
-      const form = document.getElementById('emailForm');
-      const alert = document.getElementById('alert');
-      const submitBtn = document.getElementById('submitBtn');
-      const btnText = document.getElementById('btnText');
-      const btnSpinner = document.getElementById('btnSpinner');
+      const form = document.getElementById("emailForm");
+      const alert = document.getElementById("alert");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const btnSpinner = document.getElementById("btnSpinner");
+      const emailInput = document.getElementById("email");
+      const cursorBlock = document.getElementById("cursorBlock");
+
+      // Hide cursor when typing
+      emailInput.addEventListener("input", () => {
+        cursorBlock.style.display = emailInput.value ? "none" : "block";
+      });
 
       function showAlert(message, type) {
         alert.textContent = message;
@@ -67,23 +233,24 @@
 
       function setLoading(loading) {
         submitBtn.disabled = loading;
-        btnText.style.display = loading ? 'none' : 'inline';
-        btnSpinner.style.display = loading ? 'block' : 'none';
+        btnText.style.display = loading ? "none" : "inline";
+        btnSpinner.style.display = loading ? "block" : "none";
       }
 
-      form.addEventListener('submit', (e) => {
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
-        
-        const email = document.getElementById('email').value.trim();
-        
-        if (!email || !email.includes('@')) {
-          showAlert('Please enter a valid email address', 'error');
+
+        const email = document.getElementById("email").value.trim();
+
+        if (!email || !email.includes("@")) {
+          showAlert("ERROR: INVALID EMAIL FORMAT", "error");
           return;
         }
 
         // Store email and redirect to test
-        sessionStorage.setItem('userEmail', email);
-        window.location.href = '/test';
+        sessionStorage.setItem("userEmail", email);
+        sessionStorage.setItem("testToken", "active");
+        window.location.href = "/test";
       });
     </script>
   </body>

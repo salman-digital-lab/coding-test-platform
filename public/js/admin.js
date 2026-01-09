@@ -40,7 +40,7 @@ loginForm.addEventListener("submit", (e) => {
     adminContent.classList.add("visible");
     initAdmin();
   } else {
-    showLoginAlert("Incorrect password", "error");
+    showLoginAlert("ERROR: AUTHENTICATION FAILED", "error");
   }
 });
 
@@ -54,10 +54,13 @@ logoutBtn.addEventListener("click", () => {
 function initAdmin() {
   const resultsBody = document.getElementById("resultsBody");
   const refreshBtn = document.getElementById("refreshBtn");
+  const statTotal = document.getElementById("statTotal");
+  const statAvg = document.getElementById("statAvg");
+  const statHigh = document.getElementById("statHigh");
 
   async function loadResults() {
     resultsBody.innerHTML =
-      '<tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>';
+      '<tr><td colspan="4" class="empty-state">LOADING DATA...</td></tr>';
 
     try {
       const response = await fetch("/api/admin/results");
@@ -65,9 +68,25 @@ function initAdmin() {
 
       if (results.length === 0) {
         resultsBody.innerHTML =
-          '<tr><td colspan="4" class="text-center text-muted">No results yet</td></tr>';
+          '<tr><td colspan="4" class="empty-state">NO RECORDS FOUND</td></tr>';
+        statTotal.textContent = "0";
+        statAvg.textContent = "0%";
+        statHigh.textContent = "0%";
         return;
       }
+
+      // Calculate stats
+      const percentages = results.map((r) =>
+        Math.round((r.score / r.total_questions) * 100)
+      );
+      const avgPercentage = Math.round(
+        percentages.reduce((a, b) => a + b, 0) / percentages.length
+      );
+      const highestPercentage = Math.max(...percentages);
+
+      statTotal.textContent = results.length;
+      statAvg.textContent = avgPercentage + "%";
+      statHigh.textContent = highestPercentage + "%";
 
       resultsBody.innerHTML = results
         .map((result) => {
@@ -75,17 +94,34 @@ function initAdmin() {
             (result.score / result.total_questions) * 100
           );
           let badgeClass = "badge-danger";
-          if (percentage >= 80) badgeClass = "badge-success";
-          else if (percentage >= 60) badgeClass = "badge-warning";
+          let statusText = "FAIL";
+          if (percentage >= 80) {
+            badgeClass = "badge-success";
+            statusText = "PASS";
+          } else if (percentage >= 60) {
+            badgeClass = "badge-warning";
+            statusText = "OKAY";
+          }
 
-          const date = new Date(result.submitted_at).toLocaleString();
+          const date = new Date(result.submitted_at);
+          const timestamp = date
+            .toISOString()
+            .replace("T", " ")
+            .substring(0, 19);
 
           return `
           <tr>
             <td>${result.email}</td>
-            <td>${result.score} / ${result.total_questions}</td>
-            <td><span class="badge ${badgeClass}">${percentage}%</span></td>
-            <td>${date}</td>
+            <td>${result.score}/${result.total_questions}</td>
+            <td>
+              <div class="percentage-bar">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: ${percentage}%"></div>
+                </div>
+                <span class="bar-value ${badgeClass}">${percentage}%</span>
+              </div>
+            </td>
+            <td>${timestamp}</td>
           </tr>
         `;
         })
@@ -93,7 +129,7 @@ function initAdmin() {
     } catch (error) {
       console.error("Error:", error);
       resultsBody.innerHTML =
-        '<tr><td colspan="4" class="text-center text-muted">Failed to load results</td></tr>';
+        '<tr><td colspan="4" class="empty-state">CONNECTION ERROR</td></tr>';
     }
   }
 

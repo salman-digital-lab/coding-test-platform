@@ -3,60 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Coding Test Platform</title>
+  <title>ADMIN // SYSTEM_ACCESS</title>
   <meta name="description" content="View test results">
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .login-overlay {
       position: fixed;
       inset: 0;
-      background: var(--body-bg);
+      background: var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
     }
-    .login-card {
+    
+    .login-window {
       width: 100%;
-      max-width: 360px;
-      padding: var(--spacing-xl);
+      max-width: 420px;
     }
+    
+    .window-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      background: var(--bg-panel);
+    }
+    
+    .window-title {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    
+    .window-controls {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    
+    .window-body {
+      border: 1px solid var(--border);
+      padding: var(--space-xl);
+    }
+    
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: var(--space-md);
+    }
+    
+    .prompt-symbol {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+    
+    .prompt-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      caret-color: var(--primary);
+      outline: none;
+    }
+    
+    .prompt-input::placeholder {
+      color: var(--text-muted);
+    }
+    
     .admin-content {
       display: none;
     }
+    
     .admin-content.visible {
       display: block;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px dashed var(--border);
+    }
+    
+    .admin-header h2 {
+      margin: 0;
+    }
+    
+    .admin-actions {
+      display: flex;
+      gap: var(--space-sm);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .stat-box {
+      border: 1px solid var(--border);
+      padding: var(--space-md);
+    }
+    
+    .stat-label {
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-xs);
+    }
+    
+    .stat-label::before {
+      content: '// ';
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-shadow: var(--glow-primary);
+    }
+    
+    /* Table styling */
+    .data-table {
+      font-size: 0.8125rem;
+    }
+    
+    .data-table th {
+      background: var(--bg-panel);
+      font-size: 0.6875rem;
+    }
+    
+    .data-table td {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .percentage-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    
+    .bar-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+    }
+    
+    .bar-fill {
+      height: 100%;
+      background: var(--primary);
+      box-shadow: var(--glow-primary);
+    }
+    
+    .bar-value {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      min-width: 40px;
+      text-align: right;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: var(--space-xl);
+      color: var(--text-muted);
+    }
+    
+    .empty-state::before {
+      content: '// ';
     }
   </style>
 </head>
 <body>
   <!-- Login Overlay -->
   <div id="loginOverlay" class="login-overlay">
-    <div class="card login-card">
-      <div class="text-center">
-        <h1>Admin Login</h1>
-        <p class="subtitle">Enter password to access admin panel</p>
+    <div class="login-window">
+      <div class="window-header">
+        <span class="window-title">// ADMIN_AUTH</span>
+        <span class="window-controls">[×]</span>
       </div>
-      
-      <div id="loginAlert" class="alert"></div>
-      
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input 
-            type="password" 
-            id="password" 
-            name="password" 
-            placeholder="Enter admin password"
-            required
-          >
-        </div>
+      <div class="window-body">
+        <h1 style="font-size: 1.25rem; margin-bottom: var(--space-xs);">SYSTEM ACCESS</h1>
+        <p class="subtitle">// Authentication required for admin terminal</p>
         
-        <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
-          <span id="loginBtnText">Login</span>
-          <div id="loginSpinner" class="spinner" style="display: none;"></div>
-        </button>
-      </form>
+        <div id="loginAlert" class="alert"></div>
+        
+        <form id="loginForm">
+          <div class="prompt-line">
+            <span class="prompt-symbol">root@admin:~$</span>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="prompt-input"
+              placeholder="enter_password"
+              required
+            >
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+            <span id="loginBtnText">AUTHENTICATE</span>
+            <div id="loginSpinner" class="spinner" style="display: none;"></div>
+          </button>
+        </form>
+        
+        <div style="margin-top: var(--space-lg); padding-top: var(--space-sm); border-top: 1px dashed var(--border); font-size: 0.6875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: space-between;">
+          <span>ACCESS: RESTRICTED</span>
+          <span style="color: var(--secondary);">[LOCKED]</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -64,45 +229,57 @@
   <div id="adminContent" class="admin-content">
     <!-- Navigation -->
     <nav class="nav">
-      <a href="/" class="nav-brand">Coding Test</a>
+      <a href="/" class="nav-brand">CODING_TEST</a>
       <div class="nav-links">
-        <button class="btn btn-secondary" id="logoutBtn" style="padding: 0.375rem 0.75rem; font-size: 0.8125rem;">Logout</button>
+        <span class="text-dim" style="font-size: 0.75rem;">ADMIN_SESSION</span>
+        <button class="btn btn-secondary" id="logoutBtn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">LOGOUT</button>
       </div>
     </nav>
     
     <!-- Main Content -->
-    <main class="container" style="margin-top: 2rem; padding-bottom: 3rem;">
-      <div class="text-center mb-3">
-        <h1>Test Results</h1>
-        <p class="subtitle">View all submitted test results</p>
+    <main class="container" style="margin-top: var(--space-lg);">
+      <div class="admin-header">
+        <div>
+          <h1 style="margin-bottom: 0;">RESULTS DATABASE</h1>
+          <p class="text-dim" style="font-size: 0.75rem; margin-top: var(--space-xs);">// All submitted test results</p>
+        </div>
+        <div class="admin-actions">
+          <button class="btn btn-secondary" id="refreshBtn">REFRESH</button>
+          <button class="btn btn-primary" id="exportBtn">EXPORT CSV</button>
+        </div>
       </div>
       
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-          <h2 style="margin: 0;">Results</h2>
-          <div style="display: flex; gap: 0.5rem;">
-            <button class="btn btn-primary" id="exportBtn">Export CSV</button>
-            <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
-          </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-box">
+          <div class="stat-label">Total Submissions</div>
+          <div class="stat-value" id="statTotal">--</div>
         </div>
-        
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Score</th>
-                <th>Percentage</th>
-                <th>Submitted At</th>
-              </tr>
-            </thead>
-            <tbody id="resultsBody">
-              <tr>
-                <td colspan="4" class="text-center text-muted">Loading...</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="stat-box">
+          <div class="stat-label">Average Score</div>
+          <div class="stat-value" id="statAvg">--%</div>
         </div>
+        <div class="stat-box">
+          <div class="stat-label">Highest Score</div>
+          <div class="stat-value" id="statHigh">--%</div>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>EMAIL</th>
+              <th>SCORE</th>
+              <th>PERCENTAGE</th>
+              <th>TIMESTAMP</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody">
+            <tr>
+              <td colspan="4" class="empty-state">LOADING DATA...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </main>
   </div>
