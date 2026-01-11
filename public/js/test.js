@@ -178,11 +178,59 @@ let testResults = {};
 let userEmail = sessionStorage.getItem("userEmail");
 let monacoEditor = null;
 
+const STORAGE_KEY = `coding_test_backup_${userEmail}`;
+
+// Save state to sessionStorage
+function saveState() {
+  if (!userEmail) return;
+  const state = {
+    currentProblemIndex,
+    userCode,
+    testResults,
+  };
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// Load state from sessionStorage
+function loadState() {
+  if (!userEmail) return;
+  const saved = sessionStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      currentProblemIndex = state.currentProblemIndex || 0;
+
+      // Merge saved code
+      if (state.userCode) {
+        Object.keys(state.userCode).forEach((id) => {
+          if (problems.find((p) => p.id == id)) {
+            userCode[id] = state.userCode[id];
+          }
+        });
+      }
+
+      // Merge test results
+      if (state.testResults) {
+        Object.keys(state.testResults).forEach((id) => {
+          if (problems.find((p) => p.id == id)) {
+            testResults[id] = state.testResults[id];
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Error loading saved state:", e);
+    }
+  }
+}
+
 // Initialize code for each problem
 problems.forEach((p) => {
   userCode[p.id] = p.starterCode;
   testResults[p.id] = null;
 });
+
+// Load saved state (overwrites defaults if exists)
+loadState();
 
 // DOM Elements
 const problemNav = document.getElementById("problemNav");
@@ -216,7 +264,9 @@ function initApp() {
 
   // Initialize Monaco Editor
   monacoEditor = monaco.editor.create(editorContainer, {
-    value: problems[currentProblemIndex].starterCode,
+    value:
+      userCode[problems[currentProblemIndex].id] ||
+      problems[currentProblemIndex].starterCode,
     language: "javascript",
     theme: "vs-dark",
     fontSize: 14,
@@ -245,6 +295,7 @@ function initApp() {
   // Save code when editor changes
   monacoEditor.onDidChangeModelContent(() => {
     userCode[problems[currentProblemIndex].id] = monacoEditor.getValue();
+    saveState();
   });
 
   renderProblemNav();
@@ -285,6 +336,7 @@ function renderProblemNav() {
       }
 
       currentProblemIndex = parseInt(btn.dataset.index);
+      saveState();
       renderProblem();
       renderProblemNav();
     });
@@ -402,6 +454,7 @@ function runTests(problem, code) {
 function displayResults(problem, results) {
   const allPassed = results.every((r) => r.passed);
   testResults[problem.id] = allPassed ? "passed" : "failed";
+  saveState();
   renderProblemNav();
 
   let html = `<div class="results-summary ${allPassed ? "success" : "error"}">
@@ -556,4 +609,5 @@ function showResult(score) {
 
   // Clear session
   sessionStorage.removeItem("userEmail");
+  sessionStorage.removeItem(STORAGE_KEY);
 }
