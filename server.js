@@ -15,6 +15,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Health check for monitoring (Coolify, etc.)
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // API Routes
 
 // Submit test score
@@ -95,4 +104,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Coding Test Platform running at http://localhost:${PORT}`);
   console.log(`   📝 Homepage: http://localhost:${PORT}/`);
   console.log(`   🔧 Admin: http://localhost:${PORT}/admin`);
+  console.log(`   🏥 Health: http://localhost:${PORT}/health`);
 });
